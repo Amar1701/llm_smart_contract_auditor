@@ -1,0 +1,6 @@
+langchain
+openai
+py-solc-x
+slither-analyzer
+rich
+markdown
