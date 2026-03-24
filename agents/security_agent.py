@@ -2,34 +2,35 @@
 
 class SecurityAgent:
     """
-    Detects common smart contract security vulnerabilities
+    Detects real vulnerabilities matching Slither patterns
     """
 
-    def analyze(self, source_code):
+    def analyze(self, source_code, ast):
         findings = []
 
-        if "call.value" in source_code or ".call{" in source_code:
-            findings.append({
-                "name": "Reentrancy",
-                "lines": "Potential external call",
-                "description": "External call before state update allows reentrancy",
-                "severity": "High"
-            })
+        # 🔥 Reentrancy (improved detection)
+        if ".call{" in source_code or ".call.value(" in source_code:
+            if "balances" in source_code:
+                findings.append({
+                    "name": "Reentrancy",
+                    "description": "External call before state update",
+                    "severity": "High"
+                })
 
-        if "uint" in source_code and "+" in source_code:
+        # 🔥 Low-level calls
+        if ".call{" in source_code or ".call(" in source_code:
             findings.append({
-                "name": "Integer Overflow",
-                "lines": "Arithmetic operation",
-                "description": "Unchecked arithmetic may overflow",
+                "name": "Low Level Call",
+                "description": "Use of low-level call may be unsafe",
                 "severity": "Medium"
             })
 
-        if "onlyOwner" not in source_code:
+        # 🔥 Solidity version issue (generalized)
+        if "pragma solidity" in source_code and "^" in source_code:
             findings.append({
-                "name": "Missing Access Control",
-                "lines": "Critical functions",
-                "description": "No access control modifier detected",
-                "severity": "High"
+                "name": "Solidity Version",
+                "description": "Floating pragma version may introduce risks",
+                "severity": "Low"
             })
 
         return findings

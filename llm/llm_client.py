@@ -1,10 +1,14 @@
 # File: llm/llm_client.py
 
-from langchain.llms import OpenAI
-
 class LLMClient:
-    def __init__(self):
-        self.llm = OpenAI(temperature=0)
+    """
+    Mock LLM (No API required)
+    Used for explanation and reasoning simulation
+    """
 
     def explain(self, prompt):
-        return self.llm(prompt)
+        return (
+            "This vulnerability occurs due to unsafe smart contract logic. "
+            "It can lead to financial loss or unauthorized access. "
+            "Recommended fix: follow secure coding practices such as checks-effects-interactions pattern."
+        )
